@@ -3,7 +3,22 @@
 wxml loader for webpack
 
 
-**Under developing**
+## Installation
+
+```bash
+yarn add -D wxml-loader
+```
+
+## Usage
+
+```js
+// add a loader
+{
+  test: /\.wxml$/,
+  loader: 'wxml-loader'
+}
+```
+
 
 ## License
 
