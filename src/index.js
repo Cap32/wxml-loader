@@ -1,6 +1,7 @@
 
 import { relative, resolve } from 'path';
 import { Parser } from 'htmlparser2';
+import { isUrlRequest } from 'loader-utils';
 
 export default function (content) {
 	this.cacheable && this.cacheable();
@@ -24,7 +25,7 @@ export default function (content) {
 	};
 
 	const logValue = (name, val) => {
-		if (name !== 'src' || /\{/.test(val)) { return; }
+		if (name !== 'src' || !isUrlRequest(val)) { return; }
 
 		const dep = resolve(resourceDir, val);
 		this.addDependency(dep);
