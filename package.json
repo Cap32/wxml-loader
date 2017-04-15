@@ -21,8 +21,8 @@
   "keywords": [],
   "licenses": "MIT",
   "dependencies": {
-    "htmlparser2": "^3.9.2",
-    "loader-utils": "^1.1.0"
+    "loader-utils": "^1.1.0",
+    "sax": "^1.2.2"
   },
   "devDependencies": {
     "babel-cli": "^6.11.4",
