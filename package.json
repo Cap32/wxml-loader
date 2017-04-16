@@ -22,6 +22,7 @@
   "licenses": "MIT",
   "dependencies": {
     "loader-utils": "^1.1.0",
+    "minimize": "^2.1.0",
     "sax": "^1.2.2"
   },
   "devDependencies": {

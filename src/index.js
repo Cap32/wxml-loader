@@ -2,12 +2,14 @@
 import { resolve } from 'path';
 import sax from 'sax';
 import { Script } from 'vm';
+import Minimize from 'minimize';
 import { isUrlRequest, urlToRequest, getOptions } from 'loader-utils';
 
 const isSrc = (name) => name === 'src';
 const replaceAt = (str, start, end, replacement) =>
 	str.slice(0, start) + replacement + str.slice(end)
 ;
+
 const extract = (src, __webpack_public_path__) => {
 	const script = new Script(src, { displayErrors: true });
 	const sandbox = {
@@ -16,6 +18,12 @@ const extract = (src, __webpack_public_path__) => {
 	};
 	script.runInNewContext(sandbox);
 	return sandbox.module.exports.toString();
+};
+
+const defaultMinimizeConf = {
+	empty: true,
+	quotes: true,
+	dom: { recognizeSelfClosing: true, },
 };
 
 export default function (content) {
@@ -34,9 +42,17 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '/',
+		minimize: forceMinimize,
+		...minimizeOptions,
 	} = options;
 
 	const requests = [];
+	const hasMinimzeConfig = typeof forceMinimize === 'boolean';
+	const shouldMinimize = hasMinimzeConfig ? forceMinimize : this.minimize;
+
+	const minimize = (content) =>
+		new Minimize({ ...defaultMinimizeConf, ...minimizeOptions }).parse(content)
+	;
 
 	const loadModule = (request) => new Promise((resolve, reject) => {
 		this.loadModule(request, (err, src) => {
@@ -64,6 +80,7 @@ export default function (content) {
 
 	parser.onend = async () => {
 		await Promise.all(requests.map(replace));
+		if (shouldMinimize) { content = minimize(content); }
 		callback(null, content);
 	};
 
