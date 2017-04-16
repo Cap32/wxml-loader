@@ -6,7 +6,7 @@ describe('wxml-loader', () => {
 	it('should convert requires', (done) => {
 		const noop = () => {};
 		const cb = (err, result) => {
-			assert.equal(result, '');
+			assert.equal(result, '<view></view>');
 			done();
 		};
 		loader.call(
