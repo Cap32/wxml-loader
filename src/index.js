@@ -1,27 +1,29 @@
 
-import { relative } from 'path';
+import { resolve } from 'path';
 import sax from 'sax';
+import { Script } from 'vm';
 import { isUrlRequest, urlToRequest, getOptions } from 'loader-utils';
-import { readFileSync } from 'fs';
 
-const isRelativeUrl = (url) => /^\.+\//.test(url);
 const isSrc = (name) => name === 'src';
-const noop = () => {};
 const replaceAt = (str, start, end, replacement) =>
 	str.slice(0, start) + replacement + str.slice(end)
 ;
+const extract = (src, __webpack_public_path__) => {
+	const script = new Script(src, { displayErrors: true });
+	const sandbox = {
+		__webpack_public_path__,
+		module: {},
+	};
+	script.runInNewContext(sandbox);
+	return sandbox.module.exports.toString();
+};
 
 export default function (content) {
 	this.cacheable && this.cacheable();
-	if (!this.emitFile) {
-		throw new Error('emitFile is required from module system');
-	}
 
 	const callback = this.async();
 	const {
-		options: { context },
-		context: resourceDir,
-		resourcePath,
+		options: { context, output },
 		_module,
 	} = this;
 	const options = getOptions(this) || {};
@@ -30,45 +32,39 @@ export default function (content) {
 	const issuerContext = hasIssuer && _module.issuer.context || context;
 
 	const {
-		root = issuerContext,
+		root = resolve(context, issuerContext),
+		publicPath = output.publicPath || '/',
 	} = options;
 
-	const urls = [];
+	const requests = [];
 
-	const emit = (dep, content) => {
-		const filename = relative(issuerContext, dep);
-		this.emitFile(filename, content || readFileSync(dep, 'utf8'));
+	const loadModule = (request) => new Promise((resolve, reject) => {
+		this.loadModule(request, (err, src) => {
+			if (err) { reject(err); }
+			else { resolve(src); }
+		});
+	});
+
+	const replace = async ({ request, startIndex, endIndex }) => {
+		const src = await loadModule(request);
+		const replacement = extract(src, publicPath);
+		content = replaceAt(content, startIndex, endIndex, replacement);
 	};
-
-	const replace = ({ url, startIndex, endIndex }) =>
-		content = replaceAt(content, startIndex, endIndex, url)
-	;
 
 	const parser = sax.parser(false, { lowercase: true });
 
 	parser.onattribute = ({ name, value = '' }) => {
 		if (!isSrc(name) || !isUrlRequest(value, root)) { return; }
 
-		let url;
-
-		if (isRelativeUrl(value)) {
-			url = urlToRequest(value, resourceDir);
-		}
-		else {
-			const endIndex = parser.position - 1;
-			const startIndex = endIndex - value.length;
-			const moduleUrl = urlToRequest(value, root);
-			url = relative(resourceDir, moduleUrl);
-			urls.unshift({ url, startIndex, endIndex });
-		}
-
-		this.loadModule(url, noop);
+		const endIndex = parser.position - 1;
+		const startIndex = endIndex - value.length;
+		const request = urlToRequest(value, root);
+		requests.unshift({ request, startIndex, endIndex });
 	};
 
-	parser.onend = () => {
-		urls.forEach(replace);
-		emit(resourcePath, content);
-		callback(null, '');
+	parser.onend = async () => {
+		await Promise.all(requests.map(replace));
+		callback(null, content);
 	};
 
 	parser.write(content).close();
