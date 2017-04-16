@@ -2,6 +2,7 @@
     "parser": "babel-eslint",
     "plugins": [
         "import",
+        "jest",
         "babel"
     ],
     "ecmaFeatures": {
@@ -32,7 +33,8 @@
         "browser": true,
         "node": true,
         "es6": true,
-        "mocha": true
+        "mocha": true,
+        "jest": true
     },
     "rules": {
         "import/no-unresolved": 2,

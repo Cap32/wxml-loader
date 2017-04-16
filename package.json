@@ -9,8 +9,8 @@
     "lib"
   ],
   "scripts": {
-    "start": "yarn test -- -w --watch-extensions js",
-    "test": "NODE_ENV=development mocha -t 10000 --compilers js:babel-core/register test",
+    "start": "jest test --watch",
+    "test": "jest test",
     "prebuild": "rimraf lib",
     "build:watch": "babel src -d lib -w",
     "build": "babel src -d lib",
@@ -35,6 +35,7 @@
     "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
     "babel-eslint": "^6.1.2",
+    "babel-jest": "^19.0.0",
     "babel-plugin-transform-es2015-destructuring": "^6.19.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
     "babel-plugin-transform-es2015-parameters": "^6.18.0",
@@ -45,7 +46,15 @@
     "eslint": "^2.4.0",
     "eslint-plugin-babel": "^3.2.0",
     "eslint-plugin-import": "^2.2.0",
+    "eslint-plugin-jest": "^19.0.1",
+    "jest": "^19.0.2",
     "mocha": "^3.2.0",
     "rimraf": "^2.5.4"
+  },
+  "jest": {
+    "modulePathIgnorePatterns": [
+      "node_modules",
+      "lib"
+    ]
   }
 }
