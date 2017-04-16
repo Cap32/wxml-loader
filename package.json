@@ -18,7 +18,13 @@
   },
   "author": "cap32",
   "repository": "cap32/wxml-loader",
-  "keywords": [],
+  "keywords": [
+    "wxml",
+    "loader",
+    "webpack",
+    "wxapp",
+    "weapp"
+  ],
   "licenses": "MIT",
   "dependencies": {
     "loader-utils": "^1.1.0",
