@@ -17,6 +17,7 @@ describe('wxml-loader', () => {
 				loadModule: noop,
 				options: {
 					context: 'src',
+					output: {},
 				},
 				context: 'src',
 				resourcePath: 'src',
