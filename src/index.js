@@ -55,6 +55,9 @@ export default function (content) {
 	;
 
 	const loadModule = (request) => new Promise((resolve, reject) => {
+		try { this.addDependency(request); }
+		catch (err) {} // eslint-disable-line
+
 		this.loadModule(request, (err, src) => {
 			if (err) { reject(err); }
 			else { resolve(src); }
