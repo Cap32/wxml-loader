@@ -82,9 +82,14 @@ export default function (content) {
 	};
 
 	parser.onend = async () => {
-		await Promise.all(requests.map(replace));
-		if (shouldMinimize) { content = minimize(content); }
-		callback(null, content);
+		try {
+			await Promise.all(requests.map(replace));
+			if (shouldMinimize) { content = minimize(content); }
+			callback(null, content);
+		}
+		catch (err) {
+			callback(err, content);
+		}
 	};
 
 	parser.write(content).close();
