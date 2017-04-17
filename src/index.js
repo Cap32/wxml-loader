@@ -6,14 +6,15 @@ import Minimize from 'minimize';
 import { isUrlRequest, urlToRequest, getOptions } from 'loader-utils';
 
 const isSrc = (name) => name === 'src';
+const isRelative = (url) => /^\.+\//.test(url);
 const replaceAt = (str, start, end, replacement) =>
 	str.slice(0, start) + replacement + str.slice(end)
 ;
 
-const extract = (src, __webpack_public_path__) => {
+const extract = (src) => {
 	const script = new Script(src, { displayErrors: true });
 	const sandbox = {
-		__webpack_public_path__,
+		__webpack_public_path__: '',
 		module: {},
 	};
 	script.runInNewContext(sandbox);
@@ -32,6 +33,7 @@ export default function (content) {
 	const callback = this.async();
 	const {
 		options: { context, output },
+		context: resourceDir,
 		_module,
 	} = this;
 	const options = getOptions(this) || {};
@@ -54,19 +56,22 @@ export default function (content) {
 		new Minimize({ ...defaultMinimizeConf, ...minimizeOptions }).parse(content)
 	;
 
-	const loadModule = (request) => new Promise((resolve, reject) => {
-		try { this.addDependency(request); }
-		catch (err) {} // eslint-disable-line
-
+	const loadModule = (request) => new Promise((done, reject) => {
+		if (isRelative(request)) {
+			request = resolve(resourceDir, request);
+		}
+		this.addDependency(request);
 		this.loadModule(request, (err, src) => {
+			if (isRelative(request)) { request = resolve(resourceDir, request); }
 			if (err) { reject(err); }
-			else { resolve(src); }
+			else { done(src); }
 		});
 	});
 
 	const replace = async ({ request, startIndex, endIndex }) => {
 		const src = await loadModule(request);
-		const replacement = extract(src, publicPath);
+		const url = extract(src);
+		const replacement = isRelative(url) ? url : publicPath + url;
 		content = replaceAt(content, startIndex, endIndex, replacement);
 	};
 
