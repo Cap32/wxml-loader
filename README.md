@@ -27,7 +27,12 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
         name: '[name].[ext]',
       },
     },
-    'wxml-loader',
+    {
+      loader: 'wxml-loader',
+      options: {
+        root: resolve('src'),
+      },
+    },
   ],
 }
 ```
@@ -35,7 +40,7 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
 ##### Options
 
 - `root` (String): Root path for requiring sources
-- `publicPath` (String): Defaults to webpack [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath). If `output.publicPath` is `undefined`, default value is `/`
+- `publicPath` (String): Defaults to webpack [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath)
 - `minimize` (Boolean): To minimize. Defaults to `false`
 - All [minimize](https://github.com/Swaagie/minimize#options) options are supported
 
