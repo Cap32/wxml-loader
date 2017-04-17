@@ -1,5 +1,6 @@
 
 import { resolve } from 'path';
+import { resolve as urlResolve } from 'url';
 import sax from 'sax';
 import { Script } from 'vm';
 import Minimize from 'minimize';
@@ -33,7 +34,7 @@ export default function (content) {
 	const callback = this.async();
 	const {
 		options: { context, output },
-		context: resourceDir,
+		// context: resourceDir,
 		_module,
 	} = this;
 	const options = getOptions(this) || {};
@@ -56,15 +57,14 @@ export default function (content) {
 		new Minimize({ ...defaultMinimizeConf, ...minimizeOptions }).parse(content)
 	;
 
-	const loadModule = (request) => new Promise((done, reject) => {
-		if (isRelative(request)) {
-			request = resolve(resourceDir, request);
-		}
+	const loadModule = (request) => new Promise((resolve, reject) => {
+		// if (isRelative(request)) {
+		// 	request = join(resourceDir, request);
+		// }
 		this.addDependency(request);
 		this.loadModule(request, (err, src) => {
-			if (isRelative(request)) { request = resolve(resourceDir, request); }
 			if (err) { reject(err); }
-			else { done(src); }
+			else { resolve(src); }
 		});
 	});
 
@@ -72,6 +72,7 @@ export default function (content) {
 		const src = await loadModule(request);
 		const url = extract(src);
 		const replacement = isRelative(url) ? url : publicPath + url;
+		// console.log('url', url, publicPath);
 		content = replaceAt(content, startIndex, endIndex, replacement);
 	};
 
