@@ -1,53 +1,53 @@
 
-import loader from '../src';
+import { resolve } from 'path';
+import rimraf from 'rimraf';
+import mkdirp from 'mkdirp';
+import { readFileSync, writeFileSync } from 'fs';
+import webpack from 'webpack';
+import config from './config';
 
-const noop = () => {};
-
-const execLoader = (content, ctx = {}) =>
-	new Promise((resolve, reject) => {
-		loader.call({
-			emitFile: noop,
-			addDependency: noop,
-			options: {
-				context: 'src',
-				output: {},
-			},
-			context: 'src',
-			resourcePath: 'src',
-			loadModule: (req, cb) => cb(null,
-				`module.exports = __webpack_public_path__ + ${JSON.stringify(req)};`
-			),
-			...ctx,
-			async: () => (err, res) => {
-				if (err) { reject(err); }
-				else { resolve(res); }
-			},
-		}, content);
-	})
+const readFile = () =>
+	readFileSync(resolve(__dirname, 'dist', 'index.wxml'), 'utf8')
 ;
 
-test('should convert requires', async () => {
-	const res = await execLoader('<view></view>');
-	expect(res).toBe('<view></view>');
-});
+const writeWXML = (content) =>
+	writeFileSync(resolve(__dirname, 'src', 'index.wxml'), content, 'utf8')
+;
 
-test('should require `src` attr', async () => {
-	const res = await execLoader('<image src="./test.jpg"></image>');
-	expect(res).toBe('<image src="./test.jpg"></image>');
-});
+const clear = () => {
+	rimraf.sync(resolve(__dirname, 'src'));
+	rimraf.sync(resolve(__dirname, 'dist'));
+};
 
-test('should set `publicPath` to `src`', async () => {
-	const publicPath = '/public';
-	const res = await execLoader('<image src="./test.jpg"></image>', {
-		options: {
-			context: 'src',
-			output: { publicPath },
-		},
+const mkdir = () => {
+	clear();
+	mkdirp.sync(resolve(__dirname, 'src'));
+};
+
+const compile = (content, query) => {
+	writeWXML(content);
+	return new Promise((resolve, reject) => {
+		webpack(config(query), (err) => {
+			if (err) { reject(err); }
+			else { resolve(); }
+		});
 	});
-	expect(res).toBe(`<image src="${publicPath}/test.jpg"></image>`);
-});
+};
 
-test('should minimize', async () => {
-	const res = await execLoader('<view> </view>', { minimize: true });
-	expect(res).toBe('<view></view>');
+describe('wxml-loader', () => {
+	beforeEach(mkdir);
+	afterEach(clear);
+
+	it('should export file', async () => {
+		const content = '<view></view>';
+		await compile(content);
+		const result = readFile();
+		expect(result).toBe(content);
+	});
+
+	it('should minimize file', async () => {
+		await compile('<view> </view>', { minimize: true });
+		const result = readFile();
+		expect(result).toBe('<view></view>');
+	});
 });
