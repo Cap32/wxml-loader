@@ -1,5 +1,7 @@
 # wxml-loader
 
+[![CircleCI](https://circleci.com/gh/Cap32/wxml-loader.svg?style=shield)](https://circleci.com/gh/Cap32/wxml-loader) [![Build Status](https://travis-ci.org/Cap32/wxml-loader.svg?branch=master)](https://travis-ci.org/Cap32/wxml-loader)
+
 wxml loader for webpack
 
 **Please note this [wxml](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/) is a markup language for [WeiXin App](https://mp.weixin.qq.com/debug/wxadoc/dev/)**
