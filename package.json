@@ -1,7 +1,7 @@
 {
   "name": "wxml-loader",
   "description": "wxml loader for webpack",
-  "version": "0.0.0-4",
+  "version": "0.0.0-5",
   "main": "lib/index",
   "files": [
     "*.md",
