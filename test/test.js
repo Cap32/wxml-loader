@@ -50,4 +50,10 @@ describe('wxml-loader', () => {
 		const result = readFile();
 		expect(result).toBe('<view></view>');
 	});
+
+	it('should minimize work with self closing element', async () => {
+		await compile('<input />', { minimize: true });
+		const result = readFile();
+		expect(result).toBe('<input/>');
+	});
 });

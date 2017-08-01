@@ -2,7 +2,7 @@
 import { resolve } from 'path';
 import sax from 'sax';
 import { Script } from 'vm';
-import Minimize from 'minimize';
+import Minifier from 'html-minifier';
 import { isUrlRequest, urlToRequest, getOptions } from 'loader-utils';
 
 const ROOT_TAG_NAME = 'xxx-wxml-root-xxx';
@@ -26,9 +26,17 @@ const extract = (src, __webpack_public_path__) => {
 };
 
 const defaultMinimizeConf = {
-	empty: true,
-	quotes: true,
-	dom: { recognizeSelfClosing: true, },
+	html5: false,
+	removeComments: true,
+	removeCommentsFromCDATA: true,
+	removeCDATASectionsFromCDATA: true,
+	collapseWhitespace: true,
+	collapseBooleanAttributes: true,
+	removeRedundantAttributes: true,
+	removeEmptyAttributes: true,
+	keepClosingSlash: true,
+	removeScriptTypeAttributes: true,
+	removeStyleLinkTypeAttributes: true,
 };
 
 export default function (content) {
@@ -54,10 +62,6 @@ export default function (content) {
 	const requests = [];
 	const hasMinimzeConfig = typeof forceMinimize === 'boolean';
 	const shouldMinimize = hasMinimzeConfig ? forceMinimize : this.minimize;
-
-	const minimize = (content) =>
-		new Minimize({ ...defaultMinimizeConf, ...minimizeOptions }).parse(content)
-	;
 
 	const loadModule = (request) => new Promise((resolve, reject) => {
 		this.addDependency(request);
@@ -90,7 +94,12 @@ export default function (content) {
 		try {
 			for (const req of requests) { await replace(req); }
 
-			if (shouldMinimize) { content = minimize(content); }
+			if (shouldMinimize) {
+				content = Minifier.minify(content, {
+					...defaultMinimizeConf,
+					...minimizeOptions,
+				});
+			}
 			callback(null, content);
 		}
 		catch (err) {
