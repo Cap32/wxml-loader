@@ -44,7 +44,7 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
 - `root` (String): Root path for requiring sources
 - `publicPath` (String): Defaults to webpack [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath)
 - `minimize` (Boolean): To minimize. Defaults to `false`
-- All [minimize](https://github.com/Swaagie/minimize#options) options are supported
+- All [html-minifier](https://github.com/kangax/html-minifier#options-quick-reference) options are supported
 
 
 ## Related Repo
