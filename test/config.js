@@ -12,7 +12,7 @@ export default (query = {}) => ({
 		rules: [
 			{
 				test: /\.wxml$/,
-				include: /test\/src/,
+				// include: /test\/src/,
 				use: [
 					{
 						loader: 'file-loader',
@@ -29,6 +29,19 @@ export default (query = {}) => ({
 					},
 				],
 			},
+			{
+				test: /\.gif$/,
+				// include: /test\/src/,
+				use: [
+					{
+						loader: 'file-loader',
+						options: {
+							name: '[name].[ext]',
+						},
+					},
+				],
+			},
 		],
 	},
+	stats: 'verbose',
 });

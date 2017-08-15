@@ -11,6 +11,9 @@ const ROOT_TAG_END = `</${ROOT_TAG_NAME}>`;
 const ROOT_TAG_LENGTH = ROOT_TAG_START.length;
 
 const isSrc = (name) => name === 'src';
+
+const isDynamicSrc = (src) => /\{\{/.test(src);
+
 const replaceAt = (str, start, end, replacement) =>
 	str.slice(0, start) + replacement + str.slice(end)
 ;
@@ -82,11 +85,14 @@ export default function (content) {
 	const parser = sax.parser(false, { lowercase: true });
 
 	parser.onattribute = ({ name, value = '' }) => {
-		if (!isSrc(name) || !isUrlRequest(value, root)) { return; }
+		if (!isSrc(name) || isDynamicSrc(value) || !isUrlRequest(value, root)) {
+			return;
+		}
 
 		const endIndex = parser.position - 1 - ROOT_TAG_LENGTH;
 		const startIndex = endIndex - value.length;
 		const request = urlToRequest(value, root);
+
 		requests.unshift({ request, startIndex, endIndex });
 	};
 
