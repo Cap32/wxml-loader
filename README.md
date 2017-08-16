@@ -47,6 +47,11 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
 - All [html-minifier](https://github.com/kangax/html-minifier#options-quick-reference) options are supported
 
 
+## Known Issues
+
+Currently `wxml-loader` could not resolve dynamic path, i.e. `<image src="./images/{{icon}}.png" />`. Please use `copy-webapck-plugin` to copy those resource to dist directory manually. See https://github.com/Cap32/wxml-loader/issues/1 for detail (Chinese).
+
+
 ## Related Repo
 
 For a complete guild to use `webpack` to develop `WeiXin App`, please checkout my [wxapp-boilerplate](https://github.com/cantonjs/wxapp-boilerplate) repo.
