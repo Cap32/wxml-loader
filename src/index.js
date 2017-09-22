@@ -59,7 +59,7 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '',
-		formatContent = (content) => {
+		transformContent = (content) => {
 			switch (target.name) {
 				case 'Alipay':
 					return content.replace(/\bwx:/g, 'a:');
@@ -69,7 +69,7 @@ export default function (content) {
 					return content;
 			}
 		},
-		formatUrl = (url) => {
+		transformUrl = (url) => {
 			switch (target.name) {
 				case 'Alipay':
 					return url.replace(/\.wxml$/g, '.axml');
@@ -100,7 +100,9 @@ export default function (content) {
 	const replaceRequest = async ({ request, startIndex, endIndex }) => {
 		const src = await loadModule(request);
 		let url = extract(src, publicPath);
-		if (typeof formatUrl === 'function') { url = formatUrl(url, resource); }
+		if (typeof transformUrl === 'function') {
+			url = transformUrl(url, resource);
+		}
 		content = replaceAt(content, startIndex, endIndex, url);
 	};
 
@@ -124,8 +126,8 @@ export default function (content) {
 				await replaceRequest(req);
 			}
 
-			if (typeof formatContent === 'function') {
-				content = formatContent(content, resource);
+			if (typeof transformContent === 'function') {
+				content = transformContent(content, resource);
 			}
 
 			if (shouldMinimize) {
