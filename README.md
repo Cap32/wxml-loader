@@ -4,7 +4,7 @@
 
 wxml loader for webpack
 
-**Please note this [wxml](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/) is a markup language for [WeiXin App](https://mp.weixin.qq.com/debug/wxadoc/dev/)**
+**Please note this [wxml](https://mp.weixin.qq.com/debug/wxadoc/dev/framework/view/wxml/) is a markup language for [Wechat mini programs](https://mp.weixin.qq.com/debug/wxadoc/dev/)**
 
 
 ## Installation
@@ -43,6 +43,7 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
 
 - `root` (String): Root path for requiring sources
 - `publicPath` (String): Defaults to webpack [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath)
+- `format(content, resource)` (Function): Format content, should return a content string
 - `minimize` (Boolean): To minimize. Defaults to `false`
 - All [html-minifier](https://github.com/kangax/html-minifier#options-quick-reference) options are supported
 
@@ -50,6 +51,46 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
 ## Known Issues
 
 Currently `wxml-loader` could not resolve dynamic path, i.e. `<image src="./images/{{icon}}.png" />`. Please use `copy-webapck-plugin` to copy those resource to dist directory manually. See https://github.com/Cap32/wxml-loader/issues/1 for detail (Chinese).
+
+
+## For Alipay mini programs
+
+This loader is also compatible with [Alipay mini programs](https://mini.open.alipay.com/channel/miniIndex.htm). You just need to make sure using `test: /\.axml$/` instead of `test: /\.wxml$/` in webpack config.
+
+If you're using [wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin) and setting `Targets.Alipay` as webpack target, it will automatically set `format()` option by default, and the `format()` function will convert `wx:attr` attribute into `a:attr` automatically. That means you could write mini programs once, and build both Wechat and Alipay mini programs.
+
+###### Example
+
+webpack.config.babel.js
+
+```js
+import WXAppWebpackPlugin, { Targets } from 'wxapp-webpack-plugin';
+export default (env) => ({
+  // ...other
+  target: Targets[env.target || 'Wechat'],
+  module: {
+    rules: [
+      // ...other,
+      {
+        test: /\.wxml$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: `[name].${env.target === 'Alipay' ? 'axml' : 'wxml'}`,
+            },
+          },
+          'wxml-loader',
+        ],
+      },
+    ],
+  },
+  plugin: [
+    // ...other
+    new WXAppWebpackPlugin(),
+  ],
+});
+```
 
 
 ## Related Repo
