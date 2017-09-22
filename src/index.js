@@ -113,7 +113,7 @@ export default function (content) {
 			}
 
 			if (typeof format === 'function') {
-				content = format(content);
+				content = format(content, _module.resource);
 			}
 
 			if (shouldMinimize) {
