@@ -43,7 +43,8 @@ You may also need to use [file-loader](https://github.com/webpack-contrib/file-l
 
 - `root` (String): Root path for requiring sources
 - `publicPath` (String): Defaults to webpack [output.publicPath](https://webpack.js.org/configuration/output/#output-publicpath)
-- `format(content, resource)` (Function): Format content, should return a content string
+- `transformContent(content, resource)` (Function): Transform content, should return a content string
+- `transformUrl(url, resource)` (Function): Transform url, should return a url
 - `minimize` (Boolean): To minimize. Defaults to `false`
 - All [html-minifier](https://github.com/kangax/html-minifier#options-quick-reference) options are supported
 
@@ -57,7 +58,7 @@ Currently `wxml-loader` could not resolve dynamic path, i.e. `<image src="./imag
 
 This loader is also compatible with [Alipay mini programs](https://mini.open.alipay.com/channel/miniIndex.htm). You just need to make sure using `test: /\.axml$/` instead of `test: /\.wxml$/` in webpack config.
 
-If you're using [wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin) and setting `Targets.Alipay` as webpack target, it will automatically set `format()` option by default, and the `format()` function will convert `wx:attr` attribute into `a:attr` automatically. That means you could write mini programs once, and build both Wechat and Alipay mini programs.
+If you're using [wxapp-webpack-plugin](https://github.com/Cap32/wxapp-webpack-plugin) and setting `Targets.Alipay` as webpack target, it will automatically set `transformContent()` and `transformUrl()` option by default, the `transformContent()` function will transform `wx:attr` attribute to `a:attr`, and the `transformUrl()` function will transform `.wxml` extension to `.axml` automatically. That means you could write mini programs once, and build both Wechat and Alipay mini programs.
 
 ###### Example
 
