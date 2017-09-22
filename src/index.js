@@ -48,11 +48,12 @@ export default function (content) {
 	const callback = this.async();
 	const {
 		options: { context, output, target },
-		_module,
+		_module = {},
 	} = this;
 	const options = getOptions(this) || {};
+	const { resource } = _module;
 
-	const hasIssuer = _module && _module.issuer;
+	const hasIssuer = _module.issuer;
 	const issuerContext = hasIssuer && _module.issuer.context || context;
 
 	const {
@@ -99,7 +100,7 @@ export default function (content) {
 	const replaceRequest = async ({ request, startIndex, endIndex }) => {
 		const src = await loadModule(request);
 		let url = extract(src, publicPath);
-		if (typeof formatUrl === 'function') { url = formatUrl(url); }
+		if (typeof formatUrl === 'function') { url = formatUrl(url, resource); }
 		content = replaceAt(content, startIndex, endIndex, url);
 	};
 
@@ -124,7 +125,7 @@ export default function (content) {
 			}
 
 			if (typeof formatContent === 'function') {
-				content = formatContent(content, _module.resource);
+				content = formatContent(content, resource);
 			}
 
 			if (shouldMinimize) {
