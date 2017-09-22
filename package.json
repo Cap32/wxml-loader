@@ -23,7 +23,10 @@
     "loader",
     "webpack",
     "wxapp",
-    "weapp"
+    "weapp",
+    "mini-program",
+    "wechat",
+    "alipay"
   ],
   "licenses": "MIT",
   "dependencies": {
