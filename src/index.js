@@ -59,6 +59,7 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '',
+		format,
 		transformContent = (content) => {
 			switch (target.name) {
 				case 'Alipay':
@@ -128,6 +129,17 @@ export default function (content) {
 
 			if (typeof transformContent === 'function') {
 				content = transformContent(content, resource);
+			}
+
+			if (typeof format === 'function') {
+				if (!format.__warned) {
+					format.__warned = true;
+					console.warn(
+						'[DEPRECATED]: wxml-loader `format` option has been deprecated.',
+						'Please use `transformContent() instead`.',
+					);
+				}
+				content = format(content, resource);
 			}
 
 			if (shouldMinimize) {
