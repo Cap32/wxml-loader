@@ -90,19 +90,19 @@ describe('wxml-loader', () => {
 		);
 	});
 
-	test('should formatContent() work', async () => {
+	test('should transformContent() work', async () => {
 		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
 			target: function Alipay() {},
-			formatContent: (content) => content.replace(/\bwx:/, '🦄:'),
+			transformContent: (content) => content.replace(/\bwx:/, '🦄:'),
 		});
 		const result = readFile();
 		expect(result).toBe('<view 🦄:for="{{items}}"> {{item}} </view>');
 	});
 
-	test('should formatUrl() work', async () => {
+	test('should transformUrl() work', async () => {
 		await compile('<import src="/fixture.wxml" />', {
 			target: function Alipay() {},
-			formatUrl: (url) => url.replace(/fixture/, '🦄'),
+			transformUrl: (url) => url.replace(/fixture/, '🦄'),
 		});
 		const result = readFile();
 		expect(result).toBe('<import src="/🦄.wxml" />');
