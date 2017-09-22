@@ -70,25 +70,41 @@ describe('wxml-loader', () => {
 	});
 
 	test('should Wechat target work', async () => {
-		await compile('<view wx:for="{{items}}"> {{item}} </view>');
+		await compile(
+			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>'
+		);
 		const result = readFile();
-		expect(result).toBe('<view wx:for="{{items}}"> {{item}} </view>');
+		expect(result).toBe(
+			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>'
+		);
 	});
 
 	test('should Alipay target work', async () => {
-		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
-			target: function Alipay() {},
-		});
+		await compile(
+			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>',
+			{ target: function Alipay() {} },
+		);
 		const result = readFile();
-		expect(result).toBe('<view a:for="{{items}}"> {{item}} </view>');
+		expect(result).toBe(
+			'<import src="/fixture.axml" /><view a:for="{{items}}">{{item}}</view>'
+		);
 	});
 
-	test('should format() work', async () => {
+	test('should formatContent() work', async () => {
 		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
 			target: function Alipay() {},
-			format: (content) => content.replace(/\bwx:/, '🦄:'),
+			formatContent: (content) => content.replace(/\bwx:/, '🦄:'),
 		});
 		const result = readFile();
 		expect(result).toBe('<view 🦄:for="{{items}}"> {{item}} </view>');
+	});
+
+	test('should formatUrl() work', async () => {
+		await compile('<import src="/fixture.wxml" />', {
+			target: function Alipay() {},
+			formatUrl: (url) => url.replace(/fixture/, '🦄'),
+		});
+		const result = readFile();
+		expect(result).toBe('<import src="/🦄.wxml" />');
 	});
 });

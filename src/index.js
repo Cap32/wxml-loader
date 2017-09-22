@@ -58,7 +58,7 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '',
-		format = (content) => {
+		formatContent = (content) => {
 			switch (target.name) {
 				case 'Alipay':
 					return content.replace(/\bwx:/g, 'a:');
@@ -66,6 +66,16 @@ export default function (content) {
 					return content.replace(/\ba:/g, 'wx:');
 				default:
 					return content;
+			}
+		},
+		formatUrl = (url) => {
+			switch (target.name) {
+				case 'Alipay':
+					return url.replace(/\.wxml$/g, '.axml');
+				case 'Wechat':
+					return url.replace(/\.axml$/g, '.wxml');
+				default:
+					return url;
 			}
 		},
 		minimize: forceMinimize,
@@ -88,8 +98,9 @@ export default function (content) {
 
 	const replaceRequest = async ({ request, startIndex, endIndex }) => {
 		const src = await loadModule(request);
-		const replacement = extract(src, publicPath);
-		content = replaceAt(content, startIndex, endIndex, replacement);
+		let url = extract(src, publicPath);
+		if (typeof formatUrl === 'function') { url = formatUrl(url); }
+		content = replaceAt(content, startIndex, endIndex, url);
 	};
 
 	const parser = sax.parser(false, { lowercase: true });
@@ -112,8 +123,8 @@ export default function (content) {
 				await replaceRequest(req);
 			}
 
-			if (typeof format === 'function') {
-				content = format(content, _module.resource);
+			if (typeof formatContent === 'function') {
+				content = formatContent(content, _module.resource);
 			}
 
 			if (shouldMinimize) {
