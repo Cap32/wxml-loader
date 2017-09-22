@@ -1,47 +1,49 @@
 
 import { resolve } from 'path';
 
-export default (query = {}) => ({
-	entry: resolve(__dirname, 'src', 'index.wxml'),
-	output: {
-		filename: 'index.js',
-		publicPath: '/',
-		path: resolve(__dirname, 'dist'),
-	},
-	module: {
-		rules: [
-			{
-				test: /\.wxml$/,
-				// include: /test\/src/,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							name: '[name].[ext]',
+export default (options = {}) => {
+	const { target, ...other } = options;
+	return {
+		entry: resolve(__dirname, 'src', 'index.wxml'),
+		output: {
+			filename: 'index.js',
+			publicPath: '/',
+			path: resolve(__dirname, 'dist'),
+		},
+		target,
+		module: {
+			rules: [
+				{
+					test: /\.wxml$/,
+					use: [
+						{
+							loader: 'file-loader',
+							options: {
+								name: '[name].[ext]',
+							},
 						},
-					},
-					{
-						loader: './src',
-						options: {
-							root: resolve(__dirname, 'src'),
-							...query,
+						{
+							loader: './src',
+							options: {
+								root: resolve(__dirname, 'src'),
+								...other,
+							},
 						},
-					},
-				],
-			},
-			{
-				test: /\.gif$/,
-				// include: /test\/src/,
-				use: [
-					{
-						loader: 'file-loader',
-						options: {
-							name: '[name].[ext]',
+					],
+				},
+				{
+					test: /\.gif$/,
+					use: [
+						{
+							loader: 'file-loader',
+							options: {
+								name: '[name].[ext]',
+							},
 						},
-					},
-				],
-			},
-		],
-	},
-	stats: 'verbose',
-});
+					],
+				},
+			],
+		},
+		stats: 'verbose',
+	};
+};

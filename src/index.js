@@ -47,7 +47,7 @@ export default function (content) {
 
 	const callback = this.async();
 	const {
-		options: { context, output },
+		options: { context, output, target },
 		_module,
 	} = this;
 	const options = getOptions(this) || {};
@@ -58,6 +58,16 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '',
+		format = (content) => {
+			switch (target.name) {
+				case 'Alipay':
+					return content.replace(/\bwx:/g, 'a:');
+				case 'Wechat':
+					return content.replace(/\ba:/g, 'wx:');
+				default:
+					return content;
+			}
+		},
 		minimize: forceMinimize,
 		...minimizeOptions,
 	} = options;
@@ -76,7 +86,7 @@ export default function (content) {
 
 	const xmlContent = `${ROOT_TAG_START}${content}${ROOT_TAG_END}`;
 
-	const replace = async ({ request, startIndex, endIndex }) => {
+	const replaceRequest = async ({ request, startIndex, endIndex }) => {
 		const src = await loadModule(request);
 		const replacement = extract(src, publicPath);
 		content = replaceAt(content, startIndex, endIndex, replacement);
@@ -98,7 +108,13 @@ export default function (content) {
 
 	parser.onend = async () => {
 		try {
-			for (const req of requests) { await replace(req); }
+			for (const req of requests) {
+				await replaceRequest(req);
+			}
+
+			if (typeof format === 'function') {
+				content = format(content);
+			}
 
 			if (shouldMinimize) {
 				content = Minifier.minify(content, {
