@@ -29,7 +29,7 @@ const extract = (src, __webpack_public_path__) => {
 };
 
 const defaultMinimizeConf = {
-	html5: false,
+	html5: true,
 	removeComments: true,
 	removeCommentsFromCDATA: true,
 	removeCDATASectionsFromCDATA: true,
