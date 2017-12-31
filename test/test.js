@@ -108,7 +108,6 @@ describe('wxml-loader', () => {
 		expect(result).toBe('<import src="/🦄.wxml" />');
 	});
 
-	// TODO: https://github.com/kangax/html-minifier/issues/868
 	test('should minimize work with <inline><block/></inline>', async () => {
 		const code = '<span><div></div></span>';
 		await compile(code, { minimize: true });
