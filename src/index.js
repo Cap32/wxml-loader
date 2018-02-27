@@ -29,12 +29,12 @@ const extract = (src, __webpack_public_path__) => {
 };
 
 const defaultMinimizeConf = {
+	caseSensitive: true,
 	html5: true,
 	removeComments: true,
 	removeCommentsFromCDATA: true,
 	removeCDATASectionsFromCDATA: true,
 	collapseWhitespace: true,
-	collapseBooleanAttributes: true,
 	removeRedundantAttributes: true,
 	removeEmptyAttributes: true,
 	keepClosingSlash: true,

@@ -114,4 +114,26 @@ describe('wxml-loader', () => {
 		const result = readFile();
 		expect(result).toBe('<span><div></div></span>');
 	});
+
+	test('should minimize work with camelCase attribute', async () => {
+		const code = '<div nickName="name"></div>';
+		await compile(code, { minimize: true });
+		const result = readFile();
+		expect(result).toBe('<div nickName="name"></div>');
+	});
+
+	test('should minimize work with form attribute', async () => {
+		const code = '<form bindsubmit="submitForm" report-submit="true">';
+		await compile(code, { minimize: true });
+		const result = readFile();
+		expect(result).toBe('<form bindsubmit="submitForm" report-submit="true"></form>');
+	});
+
+	test('should minimize work with controls attribute', async () => {
+		const code = '<map id="map" controls="{{controls}}"></map>';
+		await compile(code, { minimize: true });
+		const result = readFile();
+		expect(result).toBe('<map id="map" controls="{{controls}}"></map>');
+	});
+
 });
