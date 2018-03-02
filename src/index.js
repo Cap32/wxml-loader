@@ -1,4 +1,3 @@
-
 import { resolve } from 'path';
 import sax from 'sax';
 import { Script } from 'vm';
@@ -15,8 +14,7 @@ const isSrc = (name) => name === 'src';
 const isDynamicSrc = (src) => /\{\{/.test(src);
 
 const replaceAt = (str, start, end, replacement) =>
-	str.slice(0, start) + replacement + str.slice(end)
-;
+	str.slice(0, start) + replacement + str.slice(end);
 
 const extract = (src, __webpack_public_path__) => {
 	const script = new Script(src, { displayErrors: true });
@@ -46,15 +44,12 @@ export default function (content) {
 	this.cacheable && this.cacheable();
 
 	const callback = this.async();
-	const {
-		options: { context, output, target },
-		_module = {},
-	} = this;
+	const { options: { context, output, target }, _module = {} } = this;
 	const options = getOptions(this) || {};
 	const { resource } = _module;
 
 	const hasIssuer = _module.issuer;
-	const issuerContext = hasIssuer && _module.issuer.context || context;
+	const issuerContext = (hasIssuer && _module.issuer.context) || context;
 
 	const {
 		root = resolve(context, issuerContext),
@@ -81,20 +76,25 @@ export default function (content) {
 			}
 		},
 		minimize: forceMinimize,
-		...minimizeOptions,
+		...minimizeOptions
 	} = options;
 
 	const requests = [];
 	const hasMinimzeConfig = typeof forceMinimize === 'boolean';
 	const shouldMinimize = hasMinimzeConfig ? forceMinimize : this.minimize;
 
-	const loadModule = (request) => new Promise((resolve, reject) => {
-		this.addDependency(request);
-		this.loadModule(request, (err, src) => {
-			if (err) { reject(err); }
-			else { resolve(src); }
+	const loadModule = (request) =>
+		new Promise((resolve, reject) => {
+			this.addDependency(request);
+			this.loadModule(request, (err, src) => {
+				if (err) {
+					reject(err);
+				}
+				else {
+					resolve(src);
+				}
+			});
 		});
-	});
 
 	const xmlContent = `${ROOT_TAG_START}${content}${ROOT_TAG_END}`;
 

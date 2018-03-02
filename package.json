@@ -11,6 +11,7 @@
   "scripts": {
     "start": "jest test --watch",
     "test": "jest test",
+    "prettier": "prettier-eslint --write \"+(src|test)/**/*.js\"",
     "prebuild": "rimraf lib",
     "build:watch": "babel src -d lib -w",
     "build": "babel src -d lib",
@@ -37,7 +38,6 @@
   "devDependencies": {
     "babel-cli": "^6.11.4",
     "babel-core": "^6.13.2",
-    "babel-eslint": "^6.1.2",
     "babel-jest": "^21.2.0",
     "babel-plugin-transform-es2015-destructuring": "^6.19.0",
     "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
@@ -46,13 +46,12 @@
     "babel-preset-stage-0": "^6.5.0",
     "babel-register": "^6.11.6",
     "cross-env": "^4.0.0",
-    "eslint": "^3.19.0",
-    "eslint-plugin-babel": "^4.1.1",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jest": "^19.0.1",
+    "eslint": "^4.18.1",
+    "eslint-config-cantonjs": "^0.2.0",
     "file-loader": "^0.11.1",
     "jest": "^21.2.1",
     "mkdirp": "^0.5.1",
+    "prettier-eslint-cli": "^4.7.1",
     "rimraf": "^2.5.4",
     "webpack": "^2.4.1"
   },
