@@ -5,8 +5,9 @@
 .Trashes
 ehthumbs.db
 Thumbs.db
-.log
-.logs
 *.log
-node_modules
-lib
+.log/
+.logs/
+node_modules/
+lib/
+coverage/

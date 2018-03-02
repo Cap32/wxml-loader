@@ -10,7 +10,7 @@
   ],
   "scripts": {
     "start": "jest test --watch",
-    "test": "jest test",
+    "test": "jest test --coverage",
     "prettier": "prettier-eslint --write \"+(src|test)/**/*.js\"",
     "prebuild": "rimraf lib",
     "build:watch": "babel src -d lib -w",
@@ -56,6 +56,9 @@
     "webpack": "^2.4.1"
   },
   "jest": {
+    "collectCoverageFrom": [
+      "src/**/*.js"
+    ],
     "modulePathIgnorePatterns": [
       "node_modules",
       "lib",

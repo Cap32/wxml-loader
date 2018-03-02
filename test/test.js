@@ -58,6 +58,12 @@ describe('wxml-loader', () => {
 		expect(getCompiledRes()).toBe('<image src="/images/image.gif" />');
 	});
 
+	test('should root optinal', async () => {
+		const content = '<image src="./images/image.gif" />';
+		await compile(content, { root: undefined });
+		expect(getCompiledRes()).toBe('<image src="/images/image.gif" />');
+	});
+
 	test('should dynamic src not work', async () => {
 		await compile('<image src="./images/{{image}}.gif" />');
 		expect(getCompiledRes()).toBe('<image src="./images/{{image}}.gif" />');
@@ -66,6 +72,7 @@ describe('wxml-loader', () => {
 	test('should Wechat target work', async () => {
 		await compile(
 			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>',
+			{ target: function Wechat() {} },
 		);
 		expect(getCompiledRes()).toBe(
 			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>',
@@ -86,6 +93,15 @@ describe('wxml-loader', () => {
 		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
 			target: function Alipay() {},
 			transformContent: (content) => content.replace(/\bwx:/, '🦄:'),
+		});
+		expect(getCompiledRes()).toBe('<view 🦄:for="{{items}}"> {{item}} </view>');
+	});
+
+	// DEPRECATED
+	test('should format() work', async () => {
+		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
+			target: function Alipay() {},
+			format: (content) => content.replace(/\bwx:/, '🦄:'),
 		});
 		expect(getCompiledRes()).toBe('<view 🦄:for="{{items}}"> {{item}} </view>');
 	});
@@ -124,6 +140,12 @@ describe('wxml-loader', () => {
 		expect(getCompiledRes()).toBe(
 			'<map id="map" controls="{{controls}}"></map>',
 		);
+	});
+
+	test('should ensure url if not absolute and not starts with a dot', async () => {
+		const code = '<image src="./fixture.gif" />';
+		await compile(code, { globalPublicPath: '' });
+		expect(getCompiledRes()).toBe('<image src="./fixture.gif" />');
 	});
 
 	test('should enforceRelativePath work', async () => {

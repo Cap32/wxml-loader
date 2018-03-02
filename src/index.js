@@ -51,6 +51,7 @@ export default function (content) {
 		_module = {},
 		resourcePath,
 	} = this;
+
 	const options = getOptions(this) || {};
 	const { resource } = _module;
 
@@ -94,6 +95,7 @@ export default function (content) {
 		new Promise((resolve, reject) => {
 			this.addDependency(request);
 			this.loadModule(request, (err, src) => {
+				/* istanbul ignore if */
 				if (err) {
 					reject(err);
 				}
@@ -125,6 +127,8 @@ export default function (content) {
 		if (enforceRelativePath && isSourceAbsolute) {
 			source = ensureRelativePath(source);
 		}
+
+		/* istanbul ignore else */
 		if (typeof transformUrl === 'function') {
 			source = transformUrl(source, resource);
 		}
@@ -133,8 +137,13 @@ export default function (content) {
 
 	const parser = sax.parser(false, { lowercase: true });
 
-	parser.onattribute = ({ name, value = '' }) => {
-		if (!isSrc(name) || isDynamicSrc(value) || !isUrlRequest(value, root)) {
+	parser.onattribute = ({ name, value }) => {
+		if (
+			!value ||
+			!isSrc(name) ||
+			isDynamicSrc(value) ||
+			!isUrlRequest(value, root)
+		) {
 			return;
 		}
 
@@ -151,11 +160,9 @@ export default function (content) {
 				await replaceRequest(req);
 			}
 
-			if (typeof transformContent === 'function') {
-				content = transformContent(content, resource);
-			}
-
+			/* istanbul ignore else */
 			if (typeof format === 'function') {
+				/* istanbul ignore else */
 				if (!format.__warned) {
 					format.__warned = true;
 					console.warn(
@@ -164,6 +171,9 @@ export default function (content) {
 					);
 				}
 				content = format(content, resource);
+			}
+			else if (typeof transformContent === 'function') {
+				content = transformContent(content, resource);
 			}
 
 			if (shouldMinimize) {
@@ -175,6 +185,7 @@ export default function (content) {
 			callback(null, content);
 		}
 		catch (err) {
+			/* istanbul ignore next */
 			callback(err, content);
 		}
 	};
