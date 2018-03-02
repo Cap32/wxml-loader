@@ -1,5 +1,6 @@
-
 import { resolve } from 'path';
+
+const srcDir = resolve(__dirname, 'src');
 
 export default (options = {}) => {
 	const { target, ...other } = options;
@@ -20,12 +21,14 @@ export default (options = {}) => {
 							loader: 'file-loader',
 							options: {
 								name: '[name].[ext]',
+								useRelativePath: true,
+								context: srcDir,
 							},
 						},
 						{
 							loader: './src',
 							options: {
-								root: resolve(__dirname, 'src'),
+								root: srcDir,
 								...other,
 							},
 						},
@@ -38,6 +41,8 @@ export default (options = {}) => {
 							loader: 'file-loader',
 							options: {
 								name: '[name].[ext]',
+								useRelativePath: true,
+								context: srcDir,
 							},
 						},
 					],

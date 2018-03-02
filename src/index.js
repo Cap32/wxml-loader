@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve, isAbsolute, relative, dirname, join } from 'path';
 import sax from 'sax';
 import { Script } from 'vm';
 import Minifier from 'html-minifier';
@@ -12,6 +12,8 @@ const ROOT_TAG_LENGTH = ROOT_TAG_START.length;
 const isSrc = (name) => name === 'src';
 
 const isDynamicSrc = (src) => /\{\{/.test(src);
+
+const isStartsWithDot = (src) => /^\./.test(src);
 
 const replaceAt = (str, start, end, replacement) =>
 	str.slice(0, start) + replacement + str.slice(end);
@@ -44,7 +46,11 @@ export default function (content) {
 	this.cacheable && this.cacheable();
 
 	const callback = this.async();
-	const { options: { context, output, target }, _module = {} } = this;
+	const {
+		options: { context, output, target },
+		_module = {},
+		resourcePath,
+	} = this;
 	const options = getOptions(this) || {};
 	const { resource } = _module;
 
@@ -54,6 +60,7 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '',
+		enforceRelativePath = false,
 		format,
 		transformContent = (content) => {
 			switch (target.name) {
@@ -98,13 +105,30 @@ export default function (content) {
 
 	const xmlContent = `${ROOT_TAG_START}${content}${ROOT_TAG_END}`;
 
+	const ensureStartsWithDot = (source) =>
+		isStartsWithDot(source) ? source : `./${source}`;
+
+	const ensureRelativePath = (source) => {
+		const sourcePath = join(root, source);
+		const resourceDirname = dirname(resourcePath);
+		source = relative(resourceDirname, sourcePath);
+		return ensureStartsWithDot(source);
+	};
+
 	const replaceRequest = async ({ request, startIndex, endIndex }) => {
-		const src = await loadModule(request);
-		let url = extract(src, publicPath);
-		if (typeof transformUrl === 'function') {
-			url = transformUrl(url, resource);
+		const module = await loadModule(request);
+		let source = extract(module, publicPath);
+		const isSourceAbsolute = isAbsolute(source);
+		if (!isSourceAbsolute) {
+			source = ensureStartsWithDot(source);
 		}
-		content = replaceAt(content, startIndex, endIndex, url);
+		if (enforceRelativePath && isSourceAbsolute) {
+			source = ensureRelativePath(source);
+		}
+		if (typeof transformUrl === 'function') {
+			source = transformUrl(source, resource);
+		}
+		content = replaceAt(content, startIndex, endIndex, source);
 	};
 
 	const parser = sax.parser(false, { lowercase: true });
