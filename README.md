@@ -2,6 +2,10 @@
 
 [![CircleCI](https://circleci.com/gh/Cap32/wxml-loader.svg?style=shield)](https://circleci.com/gh/Cap32/wxml-loader)
 [![Build Status](https://travis-ci.org/Cap32/wxml-loader.svg?branch=master)](https://travis-ci.org/Cap32/wxml-loader)
+[![Coverage Status](https://coveralls.io/repos/github/Cap32/wxml-loader/badge.svg?branch=master)](https://coveralls.io/github/Cap32/wxml-loader?branch=master)
+[![npm version](https://badge.fury.io/js/wxml-loader.svg)](https://badge.fury.io/js/wxml-loader)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](http://makeapullrequest.com)
+[![License](https://img.shields.io/badge/license-MIT_License-blue.svg?style=flat)](https://github.com/Cap32/wxml-loader/blob/master/LICENSE.md)
 
 wxml loader for webpack
 
