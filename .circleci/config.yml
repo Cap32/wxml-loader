@@ -4,7 +4,10 @@ jobs:
   build:
     docker:
       - image: node:8.0
+
     steps:
+      - checkout
+
       - run:
           name: Nodejs Version
           command: node --version
