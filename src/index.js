@@ -113,7 +113,7 @@ export default function (content) {
 	const ensureRelativePath = (source) => {
 		const sourcePath = join(root, source);
 		const resourceDirname = dirname(resourcePath);
-		source = relative(resourceDirname, sourcePath);
+		source = relative(resourceDirname, sourcePath).replace(/\\/g, '/');
 		return ensureStartsWithDot(source);
 	};
 
