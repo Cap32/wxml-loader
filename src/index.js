@@ -61,6 +61,7 @@ export default function (content) {
 	const {
 		root = resolve(context, issuerContext),
 		publicPath = output.publicPath || '',
+		isNoEnsureStartsWithDot = true,
 		enforceRelativePath = false,
 		format,
 		transformContent = (content) => {
@@ -108,7 +109,8 @@ export default function (content) {
 	const xmlContent = `${ROOT_TAG_START}${content}${ROOT_TAG_END}`;
 
 	const ensureStartsWithDot = (source) =>
-		isStartsWithDot(source) ? source : `./${source}`;
+		isStartsWithDot(source) || !isNoEnsureStartsWithDot ?
+			source : `./${source}`;
 
 	const ensureRelativePath = (source) => {
 		const sourcePath = join(root, source);
