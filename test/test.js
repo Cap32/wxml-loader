@@ -148,6 +148,12 @@ describe('wxml-loader', () => {
 		expect(getCompiledRes()).toBe('<image src="./fixture.gif" />');
 	});
 
+	test('should isNoEnsureStartsWithDot work with globalPublicPath ', async () => {
+		const code = '<image src="./fixture.gif" />';
+		await compile(code, { globalPublicPath: 'http://m.baidu.com/', isNoEnsureStartsWithDot: false });
+		expect(getCompiledRes()).toBe('<image src="http://m.baidu.com/fixture.gif" />');
+	});
+
 	test('should enforceRelativePath work', async () => {
 		const code = '<image src="./images/image.gif" />';
 		await compile(code, { enforceRelativePath: true });
