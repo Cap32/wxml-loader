@@ -1,7 +1,7 @@
 {
-  "name": "wxml-loader",
+  "name": "@anejs/wxml-loader",
   "description": "wxml loader for webpack",
-  "version": "0.2.1",
+  "version": "1.0.5",
   "main": "lib/index",
   "files": [
     "*.md",
@@ -17,6 +17,9 @@
     "build:watch": "babel src -d lib -w",
     "build": "babel src -d lib",
     "preversion": "yarn test && yarn build"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "author": "cap32",
   "repository": "cap32/wxml-loader",
