@@ -1,7 +1,7 @@
 {
   "name": "@anejs/wxml-loader",
   "description": "wxml loader for webpack",
-  "version": "1.0.5",
+  "version": "1.1.0",
   "main": "lib/index",
   "files": [
     "*.md",
