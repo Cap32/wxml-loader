@@ -15,6 +15,8 @@ const isDynamicSrc = (src) => /\{\{/.test(src);
 
 const isStartsWithDot = (src) => /^\./.test(src);
 
+const hasProcotol = (src) => /^(\w+:)?\/\//.test(src);
+
 const replaceAt = (str, start, end, replacement) =>
 	str.slice(0, start) + replacement + str.slice(end);
 
@@ -121,7 +123,7 @@ export default function (content) {
 		const module = await loadModule(request);
 		let source = extract(module, publicPath);
 		const isSourceAbsolute = isAbsolute(source);
-		if (!isSourceAbsolute) {
+		if (!isSourceAbsolute && !hasProcotol(source)) {
 			source = ensureStartsWithDot(source);
 		}
 		if (enforceRelativePath && isSourceAbsolute) {
