@@ -1,70 +1,80 @@
 {
-  "name": "wxml-loader",
-  "description": "wxml loader for webpack",
-  "version": "0.2.2",
-  "main": "lib/index",
-  "files": [
-    "*.md",
-    "bin",
-    "lib"
-  ],
-  "scripts": {
-    "start": "jest test --watch",
-    "test": "jest test --coverage",
-    "coverage": "cat ./coverage/lcov.info | coveralls",
-    "prettier": "prettier-eslint --write \"+(src|test)/**/*.js\"",
-    "prebuild": "rimraf lib",
-    "build:watch": "babel src -d lib -w",
-    "build": "babel src -d lib",
-    "preversion": "yarn test && yarn build"
-  },
-  "author": "cap32",
-  "repository": "cap32/wxml-loader",
-  "keywords": [
-    "wxml",
-    "loader",
-    "webpack",
-    "wxapp",
-    "weapp",
-    "mini-program",
-    "wechat",
-    "alipay"
-  ],
-  "licenses": "MIT",
-  "dependencies": {
-    "html-minifier": "^3.5.6",
-    "loader-utils": "^1.1.0",
-    "sax": "^1.2.2"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.11.4",
-    "babel-core": "^6.13.2",
-    "babel-jest": "^21.2.0",
-    "babel-plugin-transform-es2015-destructuring": "^6.19.0",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
-    "babel-plugin-transform-es2015-parameters": "^6.18.0",
-    "babel-polyfill": "^6.13.0",
-    "babel-preset-stage-0": "^6.5.0",
-    "babel-register": "^6.11.6",
-    "coveralls": "^3.0.0",
-    "cross-env": "^4.0.0",
-    "eslint": "^4.18.1",
-    "eslint-config-cantonjs": "^0.2.0",
-    "file-loader": "^1.1.11",
-    "jest": "^21.2.1",
-    "mkdirp": "^0.5.1",
-    "prettier-eslint-cli": "^4.7.1",
-    "rimraf": "^2.5.4",
-    "webpack": "^2.4.1"
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "src/**/*.js"
-    ],
-    "modulePathIgnorePatterns": [
-      "node_modules",
-      "lib",
-      "dist"
-    ]
-  }
+	"name": "wxml-loader",
+	"description": "wxml loader for webpack",
+	"version": "0.2.2",
+	"main": "lib/index",
+	"files": [
+		"*.md",
+		"bin",
+		"lib"
+	],
+	"scripts": {
+		"start": "jest test --watch",
+		"test": "jest test --coverage",
+		"coverage": "cat ./coverage/lcov.info | coveralls",
+		"prettier": "prettier-eslint --write \"+(src|test)/**/*.js\"",
+		"prebuild": "rimraf lib",
+		"precommit": "lint-staged",
+		"build:watch": "babel src -d lib -w",
+		"build": "babel src -d lib",
+		"preversion": "yarn test && yarn build"
+	},
+	"author": "cap32",
+	"repository": "cap32/wxml-loader",
+	"lint-staged": {
+		"*.{md.json,js}": [
+			"prettier --write",
+			"git add"
+		]
+	},
+	"keywords": [
+		"wxml",
+		"loader",
+		"webpack",
+		"wxapp",
+		"weapp",
+		"mini-program",
+		"wechat",
+		"alipay"
+	],
+	"licenses": "MIT",
+	"dependencies": {
+		"html-minifier": "^3.5.6",
+		"loader-utils": "^1.1.0",
+		"sax": "^1.2.2"
+	},
+	"devDependencies": {
+		"babel-cli": "^6.11.4",
+		"babel-core": "^6.13.2",
+		"babel-jest": "^21.2.0",
+		"babel-plugin-transform-es2015-destructuring": "^6.19.0",
+		"babel-plugin-transform-es2015-modules-commonjs": "^6.18.0",
+		"babel-plugin-transform-es2015-parameters": "^6.18.0",
+		"babel-polyfill": "^6.13.0",
+		"babel-preset-stage-0": "^6.5.0",
+		"babel-register": "^6.11.6",
+		"coveralls": "^3.0.0",
+		"cross-env": "^4.0.0",
+		"eslint": "^4.18.1",
+		"eslint-config-cantonjs": "^0.2.0",
+		"file-loader": "^1.1.11",
+		"husky": "^0.14.3",
+		"jest": "^21.2.1",
+		"lint-staged": "^7.2.0",
+		"mkdirp": "^0.5.1",
+		"prettier": "^1.14.0",
+		"prettier-eslint-cli": "^4.7.1",
+		"rimraf": "^2.5.4",
+		"webpack": "^2.4.1"
+	},
+	"jest": {
+		"collectCoverageFrom": [
+			"src/**/*.js"
+		],
+		"modulePathIgnorePatterns": [
+			"node_modules",
+			"lib",
+			"dist"
+		]
+	}
 }
