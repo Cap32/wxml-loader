@@ -44,7 +44,7 @@ const defaultMinimizeConf = {
 	removeStyleLinkTypeAttributes: true,
 };
 
-export default function (content) {
+export default function(content) {
 	this.cacheable && this.cacheable();
 
 	const callback = this.async();
@@ -100,8 +100,7 @@ export default function (content) {
 				/* istanbul ignore if */
 				if (err) {
 					reject(err);
-				}
-				else {
+				} else {
 					resolve(src);
 				}
 			});
@@ -169,12 +168,11 @@ export default function (content) {
 					format.__warned = true;
 					console.warn(
 						'[DEPRECATED]: wxml-loader `format` option has been deprecated.',
-						'Please use `transformContent() instead`.',
+						'Please use `transformContent() instead`.'
 					);
 				}
 				content = format(content, resource);
-			}
-			else if (typeof transformContent === 'function') {
+			} else if (typeof transformContent === 'function') {
 				content = transformContent(content, resource);
 			}
 
@@ -185,8 +183,7 @@ export default function (content) {
 				});
 			}
 			callback(null, content);
-		}
-		catch (err) {
+		} catch (err) {
 			/* istanbul ignore next */
 			callback(err, content);
 		}
