@@ -6,6 +6,7 @@ export default (options = {}) => {
 	const { target, globalPublicPath = '/', ...wxmlLoaderOptions } = options;
 	return {
 		entry: resolve(__dirname, 'src', 'index.wxml'),
+		mode: 'development',
 		output: {
 			filename: 'index.js',
 			publicPath: globalPublicPath,

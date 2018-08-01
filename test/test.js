@@ -33,7 +33,7 @@ const compile = (content, options = {}) => {
 	});
 };
 
-describe('wxml-loader', () => {
+describe('wxml-loader', async () => {
 	beforeEach(mkdir);
 	afterEach(clear);
 
