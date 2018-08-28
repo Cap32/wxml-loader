@@ -80,7 +80,8 @@ export default function (content) {
 	this.cacheable && this.cacheable();
 
 	const callback = this.async();
-	const { context, target, _module = {}, resourcePath } = this;
+	const { options: webpackLegacyOptions, _module = {}, resourcePath } = this;
+	const { context, target } = webpackLegacyOptions || this;
 
 	const options = getOptions(this) || {};
 
