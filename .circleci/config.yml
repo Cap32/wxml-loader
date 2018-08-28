@@ -3,7 +3,7 @@ version: 2
 jobs:
   build:
     docker:
-      - image: node:8.0
+      - image: node:10.0
 
     steps:
       - checkout
