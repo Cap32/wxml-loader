@@ -15,6 +15,9 @@ const clear = () => {
 	rimraf.sync(resolve(__dirname, 'dist'));
 };
 
+const target = (target) => (compiler) =>
+	compiler.apply(new webpack.LoaderTargetPlugin(target));
+
 const mkdir = () => {
 	clear();
 };
@@ -33,7 +36,7 @@ const compile = (content, options = {}) => {
 	});
 };
 
-describe('wxml-loader', () => {
+describe('wxml-loader', async () => {
 	beforeEach(mkdir);
 	afterEach(clear);
 
@@ -72,7 +75,7 @@ describe('wxml-loader', () => {
 	test('should Wechat target work', async () => {
 		await compile(
 			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>',
-			{ target: function Wechat() {} },
+			{ target: target(function Wechat() {}) },
 		);
 		expect(getCompiledRes()).toBe(
 			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>',
@@ -82,7 +85,7 @@ describe('wxml-loader', () => {
 	test('should Alipay target work', async () => {
 		await compile(
 			'<import src="/fixture.wxml" /><view wx:for="{{items}}">{{item}}</view>',
-			{ target: function Alipay() {} },
+			{ target: target(function Alipay() {}) },
 		);
 		expect(getCompiledRes()).toBe(
 			'<import src="/fixture.axml" /><view a:for="{{items}}">{{item}}</view>',
@@ -91,7 +94,7 @@ describe('wxml-loader', () => {
 
 	test('should transformContent() work', async () => {
 		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
-			target: function Alipay() {},
+			target: target(function Alipay() {}),
 			transformContent: (content) => content.replace(/\bwx:/, '🦄:'),
 		});
 		expect(getCompiledRes()).toBe('<view 🦄:for="{{items}}"> {{item}} </view>');
@@ -100,7 +103,7 @@ describe('wxml-loader', () => {
 	// DEPRECATED
 	test('should format() work', async () => {
 		await compile('<view wx:for="{{items}}"> {{item}} </view>', {
-			target: function Alipay() {},
+			target: target(function Alipay() {}),
 			format: (content) => content.replace(/\bwx:/, '🦄:'),
 		});
 		expect(getCompiledRes()).toBe('<view 🦄:for="{{items}}"> {{item}} </view>');
@@ -108,7 +111,7 @@ describe('wxml-loader', () => {
 
 	test('should transformUrl() work', async () => {
 		await compile('<import src="/fixture.wxml" />', {
-			target: function Alipay() {},
+			target: target(function Alipay() {}),
 			transformUrl: (url) => url.replace(/fixture/, '🦄'),
 		});
 		expect(getCompiledRes()).toBe('<import src="/🦄.wxml" />');
