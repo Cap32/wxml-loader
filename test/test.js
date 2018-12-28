@@ -157,6 +157,14 @@ describe('wxml-loader', async () => {
 		expect(getCompiledRes()).toBe('<image src="./images/image.gif" />');
 	});
 
+	test('should enforceRelativePath ignore url with procotol', async () => {
+		const code = '<image src="cloud://m.baidu.com/fixture.gif" />';
+		await compile(code, { enforceRelativePath: true });
+		expect(getCompiledRes()).toBe(
+			'<image src="cloud://m.baidu.com/fixture.gif" />',
+		);
+	});
+
 	test('should work if publicPath starts with protocol', async () => {
 		const code = '<image src="./fixture.gif" />';
 		await compile(code, { globalPublicPath: 'http://m.baidu.com/' });
